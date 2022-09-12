@@ -11,7 +11,7 @@ const guestSlice = createSlice({
     name: "guests",
     initialState: {
         entities: [],
-        loading: false
+        loading_data: false
     },
     reducers: {
         guestDeleted(state, action) {
@@ -24,14 +24,14 @@ const guestSlice = createSlice({
     },
     extraReducers: {
         [fetchGuests.pending]: (state, action) => {
-            state.loading = true;
+            state.loading_data = true;
         },
         [fetchGuests.fulfilled]: (state, action) => {
-            state.loading = false;
+            state.loading_data = false;
             state.entities = [...state.entities, ...action.payload];
         },
         [fetchGuests.rejected]: (state, action) => {
-            state.loading = false;
+            state.loading_data = false;
         },
     },
 });

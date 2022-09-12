@@ -11,7 +11,7 @@ const adminSlice = createSlice({
     name: "admins",
     initialState: {
         entities: [],
-        loading: false
+        loading_data: false
     },
     reducers: {
         adminAdded(state, action) {
@@ -35,14 +35,14 @@ const adminSlice = createSlice({
     },
     extraReducers: {
         [fetchAdmins.pending]: (state, action) => {
-            state.loading = true;
+            state.loading_data = true;
         },
         [fetchAdmins.fulfilled]: (state, action) => {
-            state.loading = false;
+            state.loading_data = false;
             state.entities = [...state.entities, ...action.payload];
         },
         [fetchAdmins.rejected]: (state, action) => {
-            state.loading = false;
+            state.loading_data = false;
         },
     },
 });

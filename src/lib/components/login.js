@@ -4,7 +4,7 @@ import { Nav, LoginForm, Footer } from "../subComponents";
 export const Login = () => {
     return (
         <>
-            <Nav activeRoute={"login"} />
+            <Nav activeRoute={"backoffice/login"} />
             <LoginForm />
             <Footer />
         </>

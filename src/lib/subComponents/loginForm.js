@@ -12,6 +12,7 @@ export const LoginForm = () => {
         errorLogin,
         successLogin,
         cookie,
+        loading,
         handleEmail,
         handlePassword,
         handleSubmit
@@ -58,7 +59,7 @@ export const LoginForm = () => {
                                 <SuccessMessage successMessage={successLogin} />
                             </div>
 
-                            <LoginBtn handleSubmit={handleSubmit} cookie={cookie} />
+                            <LoginBtn handleSubmit={handleSubmit} cookie={cookie} loading={loading} />
                         </form>
                     </div>
                 </div>

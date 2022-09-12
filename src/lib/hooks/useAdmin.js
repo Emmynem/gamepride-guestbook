@@ -8,6 +8,8 @@ import { adminAdded, adminDeleted, adminUpdated } from "../slice/admin";
 
 const useAdminLogin = () => {
 
+    const [loading, setLoading] = useState(false);
+
     const [email, setEmail] = useState("johndoe@example.com");
     const [password, setPassword] = useState("John-Doe-1");
     const [errorEmail, setErrorEmail] = useState(null);
@@ -33,10 +35,12 @@ const useAdminLogin = () => {
         }
         else {
             setErrorPassword(null);
+            setLoading(true);
 
             const loginRes = adminLogin({ email, password })
 
             loginRes.then(res => {
+                setLoading(false);
                 if (res.err) {
                     if(!res.error.response.data.success) {
                         const error = `${res.error.response.data.message}`;
@@ -62,19 +66,21 @@ const useAdminLogin = () => {
                     }, 2000)
                 }
             }).catch(err => {
+                setLoading(false);
             })
 
         }
     };
 
     return {
-        email, password, errorEmail, errorPassword, errorLogin, successLogin, cookie,
+        email, password, errorEmail, errorPassword, errorLogin, successLogin, cookie, loading,
         handleEmail, handlePassword, handleSubmit
     };
 };
 
 const useAddAdmin = (token) => {
 
+    const [loading, setLoading] = useState(false);
     const baseValidationText = config.baseValidationText;
 
     // declaring and initializing (to null) values
@@ -82,6 +88,7 @@ const useAddAdmin = (token) => {
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     // error & success prompts
     const [errorAddAdmin, setErrorAddAdmin] = useState(null);
@@ -103,6 +110,7 @@ const useAddAdmin = (token) => {
     const handleLastname = (e) => { e.preventDefault(); setLastname(e.target.value) };
     const handleEmail = (e) => { e.preventDefault(); setEmail(e.target.value) };
     const handlePassword = (e) => { e.preventDefault(); setPassword(e.target.value) };
+    const handleConfirmPassword = (e) => { e.preventDefault(); setConfirmPassword(e.target.value) };
 
     // handle form submit
     const handleSubmitAddAdmin = (e) => {
@@ -125,17 +133,26 @@ const useAddAdmin = (token) => {
             setErrorAddAdmin(baseValidationText + "Password is required");
         } else if (!validPassword.test(password)) {
             setErrorAddAdmin(baseValidationText + "Invalid password (at least 1 uppercase, lowercase and digit)");
+        } else if (confirmPassword.length === 0) {
+            setErrorAddAdmin(baseValidationText + "Confirm password is required");
+        } else if (!validPassword.test(confirmPassword)) {
+            setErrorAddAdmin(baseValidationText + "Invalid password (at least 1 uppercase, lowercase and digit)");
+        } else if (confirmPassword !== password) {
+            setErrorAddAdmin(baseValidationText + "Passwords are different");
         } else {
             setErrorAddAdmin(null);
+            setLoading(true);
             
             const addAdminRes = addAdmin(token, {
                 email,
                 password,
                 firstname,
-                lastname
+                lastname,
+                confirmPassword
             })
 
             addAdminRes.then(res => {
+                setLoading(false);
                 if (res.err) {
                     if (!res.error.response.data.success) {
                         const error = `${res.error.response.data.message}`;
@@ -163,24 +180,27 @@ const useAddAdmin = (token) => {
                     setSuccessAddAdmin("Admin Added successfully ...");
 
                     setTimeout(function () {
-                        navigate("/all-admins");
-                    }, 5000)
+                        navigate("/admins");
+                    }, 3000)
                 }
             }).catch(err => {
+                setLoading(false);
             })
         }
 
     };
 
     return {
-        firstname, lastname, email, password, errorAddAdmin, successAddAdmin,
-        handleFirstname, handleLastname, handleEmail, handlePassword, handleSubmitAddAdmin
+        firstname, lastname, email, password, confirmPassword, errorAddAdmin, successAddAdmin, loading,
+        handleFirstname, handleLastname, handleEmail, handlePassword, handleConfirmPassword, handleSubmitAddAdmin
     };
 
 };
 
 const useEditAdmin = (token, unique_id) => {
 
+    const [loading, setLoading] = useState(false);
+    const [loadingAdmin, setLoadingAdmin] = useState(true);
     const baseValidationText = config.baseValidationText;
 
     const [adminFound, setAdminFound] = useState(null);
@@ -192,6 +212,7 @@ const useEditAdmin = (token, unique_id) => {
     const findAdmin = getAdmin(token, unique_id);
 
     findAdmin.then(res => {
+        setLoadingAdmin(false);
         if (res.err) {
             if (!res.error.response.data.success) {
                 const error = `${res.error.response.data.message}`;
@@ -202,12 +223,13 @@ const useEditAdmin = (token, unique_id) => {
             }
         } else {
             const admin = res.data.data;
-
+            
             // declaring and initializing (to null) values
             setFirstname(admin.firstname);
             setLastname(admin.lastname);
         }
     }).catch(err => {
+        setLoadingAdmin(false);
     })
     // useEffect(() => {
     // }, [findAdmin]);
@@ -231,7 +253,7 @@ const useEditAdmin = (token, unique_id) => {
     // handle form submit
     const handleSubmitEditAdmin = (e) => {
         e.preventDefault();
-
+        
         // Form field validation
         if (firstname.length === 0) {
             setErrorEditAdmin(baseValidationText + "Firstname is required");
@@ -243,7 +265,8 @@ const useEditAdmin = (token, unique_id) => {
             setErrorEditAdmin(baseValidationText + "Invalid Lastname");
         } else {
             setErrorEditAdmin(null);
-
+            setLoading(true);
+            
             const editAdminRes = editAdmin(token, {
                 firstname,
                 lastname,
@@ -251,6 +274,7 @@ const useEditAdmin = (token, unique_id) => {
             })
 
             editAdminRes.then(res => {
+                setLoading(false);
                 if (res.err) {
                     if (!res.error.response.data.success) {
                         const error = `${res.error.response.data.message}`;
@@ -277,23 +301,28 @@ const useEditAdmin = (token, unique_id) => {
                     setSuccessEditAdmin("Admin Edited successfully ...");
 
                     setTimeout(function () {
-                        navigate("/all-admins");
-                    }, 5000)
+                        navigate("/admins");
+                    }, 3000)
                 }
             }).catch(err => {
+                setLoading(false);
             })
         }
 
     };
 
     return {
-        firstname, lastname, errorEditAdmin, successEditAdmin, adminFound,
+        firstname, lastname, errorEditAdmin, successEditAdmin, adminFound, loading, loadingAdmin,
         handleFirstname, handleLastname, handleSubmitEditAdmin
     };
 
 };
 
-const useDeleteAdmin = (token, unique_id) => {
+const useDeleteAdmin = (token) => {
+    
+    const [loading, setLoading] = useState(true);
+
+    const [unique_id, setUniqueId] = useState(null);
 
     // hooks
     const dispatch = useDispatch();
@@ -302,39 +331,47 @@ const useDeleteAdmin = (token, unique_id) => {
     const [errorDeleteAdmin, setErrorDeleteAdmin] = useState(null);
     const [successDeleteAdmin, setSuccessDeleteAdmin] = useState(null);
 
-    const deleteAdminRes = deleteAdmin(token, {
-        unique_id
-    })
+    const handleDelete = (e) => {
+        e.preventDefault();
 
-    deleteAdminRes.then(res => {
-        if (res.err) {
-            if (!res.error.response.data.success) {
-                const error = `${res.error.response.data.message}`;
-                setErrorDeleteAdmin(error);
-                setTimeout(function () {
-                    setErrorDeleteAdmin(null);
-                }, 2000)
+        const deleteAdminRes = deleteAdmin(token, {
+            unique_id
+        })
+    
+        deleteAdminRes.then(res => {
+            setLoading(false);
+            if (res.err) {
+                if (!res.error.response.data.success) {
+                    const error = `${res.error.response.data.message}`;
+                    setErrorDeleteAdmin(error);
+                    setTimeout(function () {
+                        setErrorDeleteAdmin(null);
+                    }, 2000)
+                } else {
+                    const error = `${res.error.code} - ${res.error.message}`;
+                    setErrorDeleteAdmin(error);
+                    setTimeout(function () {
+                        setErrorDeleteAdmin(null);
+                    }, 2000)
+                }
             } else {
-                const error = `${res.error.code} - ${res.error.message}`;
-                setErrorDeleteAdmin(error);
+                setErrorDeleteAdmin(null);
+                dispatch(adminDeleted({ unique_id }));
+                setSuccessDeleteAdmin("Admin Deleted successfully ...");
+    
                 setTimeout(function () {
-                    setErrorDeleteAdmin(null);
-                }, 2000)
+                    window.location.reload(true);
+                }, 3000)
             }
-        } else {
-            setErrorDeleteAdmin(null);
-            dispatch(adminDeleted({ unique_id }));
-            setSuccessDeleteAdmin("Admin Deleted successfully ...");
+        }).catch(err => {
+            setLoading(false);
+        })
 
-            setTimeout(function () {
-                window.location.reload(true);
-            }, 5000)
-        }
-    }).catch(err => {
-    })
+    };
+
 
     return {
-        errorDeleteAdmin, successDeleteAdmin
+        errorDeleteAdmin, successDeleteAdmin, loading, handleDelete, setUniqueId
     };
 
 };
