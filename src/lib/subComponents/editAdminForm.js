@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { config } from "../config";
 import { useEditAdmin } from "../hooks/useAdmin";
 import useCookie from "../hooks/useCookie";
 import { ErrMessage, SuccessMessage, Loading, ErrMap } from "../subComponents";
@@ -56,18 +57,20 @@ const EditAdminForm = () => {
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="col mt-4">
+                                            <div className="col mt-1">
                                                 <ErrMessage errorMessage={errorEditAdmin} />
                                                 <SuccessMessage successMessage={successEditAdmin} />
                                             </div>
-                                            <div className="col mt-4">
-                                                <button type="button" onClick={handleSubmitEditAdmin} className="btn btn-success">
+                                        </div>
+                                        <div className="row">
+                                            <div className="col mt-2">
+                                                <button type="submit" onClick={handleSubmitEditAdmin} className="btn btn-success">
                                                     {
                                                         !loading ? '' : (
-                                                            <div className="spinner-border text-light spinner-border-sm"></div>
+                                                            <div className="spinner-border text-light spinner-border-sm"></div> 
                                                         )
                                                     }
-                                                    Edit Admin
+                                                    &nbsp; Edit Admin
                                                 </button>
                                             </div>
                                         </div>

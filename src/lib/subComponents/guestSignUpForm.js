@@ -5,7 +5,7 @@ import { ErrMessage, SuccessMessage } from "../subComponents";
 const GuestSignUpForm = () => {
 
     const {
-        email, firstname, lastname, middlename, phone, checkin, errorGuestSignup, successGuestSignup, loading,
+        email, firstname, lastname, middlename, phone, check_in, errorGuestSignup, successGuestSignup, loading,
         handleEmail, handleFirstname, handleLastname, handleMiddlename, handlePhone, handleCheckIn, handleSubmit
     } = useGuestSignUp();
 
@@ -91,23 +91,25 @@ const GuestSignUpForm = () => {
                                         placeholder="Enter checkin"
                                         name="checkin"
                                         onChange={handleCheckIn}
-                                        value={checkin}
+                                        value={check_in}
                                     />
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col mt-4">
+                                <div className="col mt-1">
                                     <ErrMessage errorMessage={errorGuestSignup} />
                                     <SuccessMessage successMessage={successGuestSignup} />
                                 </div>
-                                <div className="col mt-4">
-                                    <button type="button" onClick={handleSubmit} className="btn btn-success">
+                            </div>
+                            <div className="row">
+                                <div className="col mt-2">
+                                    <button type="submit" onClick={handleSubmit} className="btn btn-success">
                                         {
                                             !loading ? '' : (
-                                                <div className="spinner-border text-light spinner-border-sm"></div>
+                                                <div className="spinner-border text-light spinner-border-sm"></div> 
                                             )
                                         }
-                                        Check In
+                                        &nbsp; Check In
                                     </button>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { DeleteModal, Loading, ErrMap } from "./";
 import { useDeleteAdmin } from '../hooks/useAdmin';
 import useCookie from "../hooks/useCookie";
+import { config } from "../config";
 
 export const AdminsTable = () => {
 

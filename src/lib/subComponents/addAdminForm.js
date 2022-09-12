@@ -1,4 +1,5 @@
 import React from "react";
+import { config } from "../config";
 import { useAddAdmin } from "../hooks/useAdmin";
 import useCookie from "../hooks/useCookie";
 import { ErrMessage, SuccessMessage } from "../subComponents";
@@ -21,7 +22,7 @@ const AddAdminForm = () => {
                     <div className="card-body">
                         <form>
                             <div className="row">
-                                <div className="col-md-4 col-sm-12 mt-2">
+                                <div className="col-md-6 col-sm-12 mt-2">
                                     <label htmlFor="firstname_add_admin">Firstname:</label>
                                     <input
                                         type="text"
@@ -33,7 +34,7 @@ const AddAdminForm = () => {
                                         value={firstname}
                                     />
                                 </div>
-                                <div className="col-md-4 col-sm-12 mt-2">
+                                <div className="col-md-6 col-sm-12 mt-2">
                                     <label htmlFor="lastname_add_admin">Lastname:</label>
                                     <input
                                         type="text"
@@ -87,18 +88,20 @@ const AddAdminForm = () => {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col mt-4">
+                                <div className="col mt-1">
                                     <ErrMessage errorMessage={errorAddAdmin} />
                                     <SuccessMessage successMessage={successAddAdmin} />
                                 </div>
-                                <div className="col mt-4">
-                                    <button type="button" onClick={handleSubmitAddAdmin} className="btn btn-success">
+                            </div>
+                            <div className="row">
+                                <div className="col mt-2">
+                                    <button type="submit" onClick={handleSubmitAddAdmin} className="btn btn-success">
                                         {
                                             !loading ? '' : (
-                                                <div className="spinner-border text-light spinner-border-sm"></div>
+                                                <div className="spinner-border text-light spinner-border-sm"></div> 
                                             )
                                         }
-                                        Add Admin
+                                        &nbsp; Add Admin
                                     </button>
                                 </div>
                             </div>

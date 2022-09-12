@@ -1,8 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAdmins } from '../api/admin';
+import { config } from "../config";
+import useCookie from "../hooks/useCookie";
 
-export const fetchAdmins = createAsyncThunk("admins/fetchAdmins", async (token) => {
-    const response = getAdmins(token);
+export const fetchAdmins = createAsyncThunk("admins/fetchAdmins", async () => {
+    const [cookie] = useCookie(config.token, "");
+    const response = getAdmins(cookie);
     const admins = await response.json();
     return admins;
 });

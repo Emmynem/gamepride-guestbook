@@ -1,8 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getGuests } from '../api/guest';
+import { config } from "../config";
+import useCookie from "../hooks/useCookie";
 
-export const fetchGuests = createAsyncThunk("guests/fetchGuests", async (token) => {
-    const response = getGuests(token);
+export const fetchGuests = createAsyncThunk("guests/fetchGuests", async () => {
+    const [cookie] = useCookie(config.token, "");
+    const response = getGuests(cookie);
     const guests = await response.json();
     return guests;
 });

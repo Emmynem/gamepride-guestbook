@@ -1,13 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { config } from "../config";
 import useCookie from "../hooks/useCookie";
 import { useDeleteGuest } from '../hooks/useGuest';
 import { DeleteModal, Loading, ErrMap } from "./";
 
 export const GuestsTable = () => {
     
-    const { entities, loading_data } = useSelector((state) => state.guests);
     const [cookie] = useCookie(config.token, "");
+    const { entities, loading_data } = useSelector((state) => state.guests);
 
     const { errorDeleteGuest, handleDelete, loading, successDeleteGuest, setUniqueId } = useDeleteGuest(cookie);
 

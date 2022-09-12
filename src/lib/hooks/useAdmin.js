@@ -61,7 +61,7 @@ const useAdminLogin = () => {
 
                     setTimeout(function () {
                         updateCookie(res.data.data.token, 1);
-                        navigate("/");
+                        navigate("/guests");
                         window.location.reload(true);
                     }, 2000)
                 }
@@ -172,6 +172,7 @@ const useAddAdmin = (token) => {
                     dispatch(
                         adminAdded({
                             id: adminsAmount + 1,
+                            unique_id: res.data.data.unique_id,
                             email,
                             firstname,
                             lastname
@@ -211,28 +212,28 @@ const useEditAdmin = (token, unique_id) => {
 
     const findAdmin = getAdmin(token, unique_id);
 
-    findAdmin.then(res => {
-        setLoadingAdmin(false);
-        if (res.err) {
-            if (!res.error.response.data.success) {
-                const error = `${res.error.response.data.message}`;
-                setAdminFound(error);
+    useEffect(() => {
+        findAdmin.then(res => {
+            setLoadingAdmin(false);
+            if (res.err) {
+                if (!res.error.response.data.success) {
+                    const error = `${res.error.response.data.message}`;
+                    setAdminFound(error);
+                } else {
+                    const error = `${res.error.code} - ${res.error.message}`;
+                    setAdminFound(error);
+                }
             } else {
-                const error = `${res.error.code} - ${res.error.message}`;
-                setAdminFound(error);
+                const admin = res.data.data;
+                
+                // declaring and initializing (to null) values
+                setFirstname(admin.firstname);
+                setLastname(admin.lastname);
             }
-        } else {
-            const admin = res.data.data;
-            
-            // declaring and initializing (to null) values
-            setFirstname(admin.firstname);
-            setLastname(admin.lastname);
-        }
-    }).catch(err => {
-        setLoadingAdmin(false);
-    })
-    // useEffect(() => {
-    // }, [findAdmin]);
+        }).catch(err => {
+            setLoadingAdmin(false);
+        })
+    }, [findAdmin]);
 
     // error & success prompts
     const [errorEditAdmin, setErrorEditAdmin] = useState(null);

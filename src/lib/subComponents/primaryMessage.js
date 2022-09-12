@@ -2,8 +2,15 @@ import React from "react";
 
 export const PrimaryMessage = ({ primaryMessage }) => {
     return (
-        <div className="alert alert-primary">
-            <strong>Info!</strong> {!primaryMessage ? '' : primaryMessage}
-        </div>
+        <>
+            {
+                !primaryMessage ? '' :
+                (
+                        <div className="alert alert-primary mt-2 mb-2">
+                        <strong>Info!</strong> {primaryMessage}
+                    </div>
+                )
+            }
+        </>
     )
 };

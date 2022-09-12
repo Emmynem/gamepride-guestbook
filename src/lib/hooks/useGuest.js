@@ -15,7 +15,7 @@ const useGuestSignUp = () => {
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [checkin, setCheckIn] = useState("");
+    const [check_in, setCheckIn] = useState("");
 
     // error & success prompts
     const [errorGuestSignup, setErrorGuestSignup] = useState(null);
@@ -29,13 +29,13 @@ const useGuestSignUp = () => {
         const d = new Date(date);
         const today = new Date();
         today.toLocaleString('en-US', { timeZone: 'Africa/Lagos' });        
-        if (d == "Invalid Date") return false;
+        if (d === "Invalid Date") return false;
         if (today.getTime() > d.getTime()) return false;
         return true;
     };
 
     // handling all onChange states
-    const handleFirstname = (e) => { e.preventDefault(); setFirstname(e.target.value) };
+    const handleFirstname = (e) => { e.preventDefault(); setErrorGuestSignup(null); setSuccessGuestSignup(null); setFirstname(e.target.value) };
     const handleMiddlename = (e) => { e.preventDefault(); setMiddlename(e.target.value) };
     const handleLastname = (e) => { e.preventDefault(); setLastname(e.target.value) };
     const handleEmail = (e) => { e.preventDefault(); setEmail(e.target.value) };
@@ -46,12 +46,12 @@ const useGuestSignUp = () => {
         e.preventDefault();
 
         if (firstname.length === 0) {
+            setErrorGuestSignup(null);
+            setSuccessGuestSignup(null);
             setErrorGuestSignup(baseValidationText + "Firstname is required");
         } else if (!validName.test(firstname)) {
             setErrorGuestSignup(baseValidationText + "Invalid Firstname");
-        } else if (middlename.length === 0) {
-            setErrorGuestSignup(baseValidationText + "Middlename is required");
-        } else if (!validName.test(middlename)) {
+        } else if (middlename.length !== 0 && !validName.test(middlename)) {
             setErrorGuestSignup(baseValidationText + "Invalid Middlename");
         } else if (lastname.length === 0) {
             setErrorGuestSignup(baseValidationText + "Lastname is required");
@@ -65,9 +65,9 @@ const useGuestSignUp = () => {
             setErrorGuestSignup(baseValidationText + "Phone is required");
         } else if (!validPhone.test(phone)) {
             setErrorGuestSignup(baseValidationText + "Invalid Phone");
-        } else if (checkin.length === 0) {
+        } else if (check_in.length === 0) {
             setErrorGuestSignup(baseValidationText + "Check In is required");
-        } else if (!validateDate(checkin)) {
+        } else if (!validateDate(check_in)) {
             setErrorGuestSignup(baseValidationText + "Invalid check-in datetime (note: Timezone +01:00)");
         } else {
             setErrorGuestSignup(null);
@@ -75,11 +75,11 @@ const useGuestSignUp = () => {
             
             const guestSignupRes = guestSignup({ 
                 firstname,
-                middlename,
+                middlename: middlename.length === 0 ? undefined : middlename,
                 lastname,
                 email,
                 phone,
-                checkin
+                check_in
             })
 
             guestSignupRes.then(res => {
@@ -100,7 +100,7 @@ const useGuestSignUp = () => {
                     }
                 } else {
                     setErrorGuestSignup(null);
-                    setSuccessGuestSignup("Check in successful ...");
+                    setSuccessGuestSignup(`${res.data.message} - ID = ${res.data.data.unique_id}`);
                     
                     setFirstname("");
                     setMiddlename("");
@@ -117,7 +117,7 @@ const useGuestSignUp = () => {
     };
 
     return {
-        email, firstname, lastname, middlename, phone, checkin, errorGuestSignup, successGuestSignup, loading,
+        email, firstname, lastname, middlename, phone, check_in, errorGuestSignup, successGuestSignup, loading,
         handleEmail, handleFirstname, handleLastname, handleMiddlename, handlePhone, handleCheckIn, handleSubmit
     };
 };
