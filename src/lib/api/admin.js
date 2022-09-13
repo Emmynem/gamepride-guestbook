@@ -32,9 +32,9 @@ const getAdmins = async function (token) {
 const getAdmin = async function (token, unique_id) {
     try {
         const response = await axios.get(
-            `${config.baseAPIurl}/backoffice/admin`,
+            `${config.baseAPIurl}/backoffice/admin?token=${token}&unique_id=${unique_id}`,
             {
-                unique_id
+                unique_id: unique_id
             },
             {
                 headers: {
@@ -70,7 +70,7 @@ const addAdmin = async function (token, payload) {
 const editAdmin = async function (token, payload) {
     try {
         const response = await axios.put(
-            `${config.baseAPIurl}/backoffice/admin`,
+            `${config.baseAPIurl}/backoffice/admin?token=${payload.token}&unique_id=${payload.unique_id}`,
             {
                 ...payload
             },
@@ -89,7 +89,7 @@ const editAdmin = async function (token, payload) {
 const deleteAdmin = async function (token, payload) {
     try {
         const response = await axios.delete(
-            `${config.baseAPIurl}/backoffice/admin`,
+            `${config.baseAPIurl}/backoffice/admin?token=${payload.token}&unique_id=${payload.unique_id}`,
             {
                 ...payload
             },

@@ -1,4 +1,4 @@
-const NAME_REGEX = /^([a-zA-Z]{2,25})$/;
+const NAME_REGEX = /^([a-zA-Z]{3,25})$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$/;
 const PHONE_REGEX = /^([- +()0-9]{6,15})$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,25}$/;

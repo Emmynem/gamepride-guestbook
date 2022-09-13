@@ -7,32 +7,40 @@ export const AdminNav = ({ activeRoute }) => {
 
     return (
         <>
-            <nav className="navbar navbar-inverse navbar-fixed-top">
-                <div className="container-fluid">
-                    <div className="navbar-header">
-                        <a className="navbar-brand" href="/">Guest Book</a>
+            <header className="header" id="header">
+                <nav className="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
+                    <a className="navbar-brand" href="/">Guest Book</a>
+
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div className="collapse navbar-collapse" id="collapsibleNavbar">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <a className={`nav-link ${activeRoute === 'guests' ? 'active' : ''}`} href="/guests">Guests</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className={`nav-link ${activeRoute === 'admins' ? 'active' : ''}`} href="/admins">Admins</a>
+                            </li>
+                            <li className="nav-item">
+                                {
+                                    cookie && cookie !== '[object Object]' ? (
+                                        <a href="/" className="nav-link icon" onClick={removeCookie}>
+                                            <span className="fas fa-sign-out-alt"></span> Logout
+                                        </a>
+                                    ) : (
+                                        <a href="/backoffice/login" className="nav-link icon">
+                                            <span className="fas fa-sign-in-alt"></span> Login
+                                        </a>
+                                    )
+                                }
+                            </li>
+                        </ul>
                     </div>
-                    <ul className="nav navbar-nav">
-                        <li className={`${activeRoute === 'guests' ? 'active' : ''}`}><a href="/guests">Guests</a></li>
-                        <li className={`${activeRoute === 'admins' ? 'active' : ''}`}><a href="/admins">Admins</a></li>
-                    </ul>
-                    <ul className="nav navbar-nav navbar-right">
-                        <li>
-                            {
-                                cookie && cookie !== '[object Object]' ? (
-                                    <a href="/" onClick={removeCookie}>
-                                        <span className="glyphicon glyphicon-log-out"></span> Logout
-                                    </a>
-                                ) : (
-                                    <a href="/backoffice/login" className="icon mt-3">
-                                        <span className="glyphicon glyphicon-log-in"></span> Login
-                                    </a>
-                                )
-                            }
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                </nav>
+                
+            </header>
 
         </>
     );
