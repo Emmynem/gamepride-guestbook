@@ -2,10 +2,15 @@ import React from "react";
 
 export const ErrMap = ({ err }) => {
     return (
-        <center>
-            <div className="alert alert-danger">
-                <strong>Error!</strong> {!err ? '' : err}
-            </div>
-        </center>
+        <>
+            {
+                !err ? '' :
+                (
+                    <div className="alert alert-danger mt-2 mb-2">
+                        <strong>Error!</strong> {err}
+                    </div>
+                )
+            }
+        </>
     )
 };

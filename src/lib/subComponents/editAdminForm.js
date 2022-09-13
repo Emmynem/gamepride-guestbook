@@ -31,7 +31,7 @@ const EditAdminForm = () => {
                                 <div className="card-body">
                                     <form>
                                         <div className="row">
-                                            <div className="col-md-4 col-sm-12 mt-2">
+                                            <div className="col-md-6 col-sm-12 mt-2">
                                                 <label htmlFor="firstname_edit_admin">Firstname:</label>
                                                 <input
                                                     type="text"
@@ -43,7 +43,7 @@ const EditAdminForm = () => {
                                                     value={firstname}
                                                 />
                                             </div>
-                                            <div className="col-md-4 col-sm-12 mt-2">
+                                            <div className="col-md-6 col-sm-12 mt-2">
                                                 <label htmlFor="lastname_edit_admin">Lastname:</label>
                                                 <input
                                                     type="text"
@@ -79,7 +79,15 @@ const EditAdminForm = () => {
                             </div>
                         </div>
                     ) :
-                    (<ErrMap err={adminFound} />)
+                    (
+                        <div className="container mt-6" style={{ paddingTop: '200px' }}>
+                            <div className="row">
+                                <div className="col-12">
+                                    <ErrMap err={adminFound} />
+                                </div>
+                            </div>
+                        </div>
+                    )
                 )
             }
         </>

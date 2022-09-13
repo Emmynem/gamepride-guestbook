@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
     return (
-        <footer className="footer sticky-bottom" style={{ marginBottom: '-50px', border: '0px'}}>
+        <footer className="footer sticky-bottom" style={{ marginBottom: '-50px', border: '0px', marginTop: '120px'}}>
             <div className="jumbotron jumbotron-fluid bg-dark text-light">
                 <div className="container">
                     <h2>Guest Book App</h2>

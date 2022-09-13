@@ -1,8 +1,6 @@
 import AddAdminForm from "./addAdminForm";
 import { AdminNav } from "./adminNav";
 import { AdminsTable } from "./adminsTable";
-import { ConfirmModal } from "./confirmModal";
-import { DeleteModal } from "./deleteModal";
 import EditAdminForm from "./editAdminForm";
 import { ErrMap } from "./errMap";
 import { ErrMessage } from "./errMessage";
@@ -18,6 +16,5 @@ import { SuccessMessage } from "./successMessage";
 
 export { 
     ErrMessage, SuccessMessage, PrimaryMessage, Loading, AdminNav, Nav, LoginBtn, LoginForm, 
-    Footer, AdminsTable, ConfirmModal, DeleteModal, GuestSignUpForm, GuestsTable, ErrMap, 
-    AddAdminForm, EditAdminForm
+    Footer, AdminsTable, GuestSignUpForm, GuestsTable, ErrMap, AddAdminForm, EditAdminForm
 };

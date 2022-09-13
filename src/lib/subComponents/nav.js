@@ -23,7 +23,7 @@ export const Nav = ({ activeRoute }) => {
                             <li className="nav-item">
                                 {
                                     cookie && cookie !== '[object Object]' ? (
-                                            <a className={`nav-link ${activeRoute === 'guests' ? 'active' : ''}`} href="guests">Office</a>
+                                            <a className={`nav-link ${activeRoute === 'guests' ? 'active' : ''}`} href="/guests">Office</a>
                                     ) : (
                                         <a className={`nav-link ${activeRoute === 'backoffice/login' ? 'active' : ''}`} href="/backoffice/login">Admin Login</a>
                                     )

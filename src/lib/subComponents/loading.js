@@ -6,7 +6,7 @@ export const Loading = ({ show }) => {
             {
                 !show ? '' : (
                     <center>
-                        <div className="spinner-border text-primary p-5"></div>
+                        <div className="spinner-border text-primary p-5" style={{margin: '200px 0px'}}></div>
                     </center>
                 )
             }

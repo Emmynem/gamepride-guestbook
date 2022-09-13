@@ -1,17 +1,26 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { DeleteModal, Loading, ErrMap } from "./";
-import { useDeleteAdmin } from '../hooks/useAdmin';
+import { Loading, ErrMap } from "./";
+import { useDeleteAdmin, useGetAdmins } from '../hooks/useAdmin';
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
+import { PrimaryMessage } from "./primaryMessage";
+import { SuccessMessage } from "./successMessage";
 
 export const AdminsTable = () => {
 
-    const { entities, loading_data } = useSelector((state) => state.admins);
     const [cookie] = useCookie(config.token, "");
+    const { errorAdmins, admins, loading_data } = useGetAdmins(cookie);
 
     const { errorDeleteAdmin, handleDelete, loading, successDeleteAdmin, setUniqueId } = useDeleteAdmin(cookie);
+
+    const openDeleteModal = function () {
+        document.getElementById("deleteModal").style.display = "block";
+    };
+
+    const closeDeleteModal = function () {
+        document.getElementById("deleteModal").style.display = "none";
+    };
 
     return (
         <>
@@ -28,41 +37,43 @@ export const AdminsTable = () => {
                             loading_data ?
                             (<Loading show={loading_data} />) :
                             (
-                                entities.length === 0 ?
-                                (<ErrMap err={`No records`} />) :
+                                errorAdmins ?
+                                (<ErrMap err={errorAdmins} />) :
                                 (
-                                    <table className="table table-light table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>S/N</th>
-                                                <th>Firstname</th>
-                                                <th>Lastname</th>
-                                                <th>Email</th>
-                                                <th>Added</th>
-                                                <th>Edit</th>
-                                                <th>Delete</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {entities.map((data, i) => (
-                                                <tr key={i}>
-                                                    <td>{i}</td>
-                                                    <td>{data.firstname}</td>
-                                                    <td>{data.lastname}</td>
-                                                    <td>{data.email}</td>
-                                                    <td>{data.createdAt}</td>
-                                                    <td>
-                                                        <Link to={`/admin/edit/${data.unique_id}`}>
-                                                            <button className='btn btn-warning'>Edit</button>
-                                                        </Link>
-                                                    </td>
-                                                    <td>
-                                                        <button className='btn btn-danger' onClick={() => setUniqueId(data.unique_id)} data-toggle="modal" data-target="#deleteModal">Delete</button>
-                                                    </td>
+                                    <div className="table-responsive">
+                                        <table className="table table-light table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Firstname</th>
+                                                    <th>Lastname</th>
+                                                    <th>Email</th>
+                                                    <th>Added</th>
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {admins.map((data, i) => (
+                                                    <tr key={i}>
+                                                        <td>{i + 1}</td>
+                                                        <td>{data.firstname}</td>
+                                                        <td>{data.lastname}</td>
+                                                        <td>{data.email}</td>
+                                                        <td>{data.createdAt}</td>
+                                                        <td>
+                                                            <Link to={`/admin/edit/${data.unique_id}`}>
+                                                                <button className='btn btn-warning'>Edit</button>
+                                                            </Link>
+                                                        </td>
+                                                        <td>
+                                                            <button className='btn btn-danger' onClick={() => { setUniqueId(data.unique_id); openDeleteModal();}} data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 )
                             )
                         }
@@ -70,7 +81,37 @@ export const AdminsTable = () => {
                 </div>
             </div>
 
-            <DeleteModal handleDelete={handleDelete} loading={loading} errorMessage={errorDeleteAdmin} successMessage={successDeleteAdmin} />
+            <div className="modal" id="deleteModal">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+
+                        <div className="modal-header">
+                            <h4 className="modal-title">Delete Confirmation</h4>
+                            <button type="button" className="close" onClick={closeDeleteModal} data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <div className="modal-body">
+                            <p>Are you sure you want to delete this item ?</p>
+                            <PrimaryMessage primaryMessage={errorDeleteAdmin} />
+                            <SuccessMessage successMessage={successDeleteAdmin} />
+                        </div>
+
+                        <div className="modal-footer">
+                            <button type="button" onClick={handleDelete} className="btn btn-success">
+                                {
+                                    !loading ? '' : (
+                                        <div className="spinner-border text-light spinner-border-sm"></div>
+                                    )
+                                }
+                                &nbsp; Yes
+                            </button>
+                            <button type="button" className="btn btn-danger" onClick={closeDeleteModal} data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </>
     )
 };

@@ -51,7 +51,7 @@ const getGuest = async function (token, unique_id) {
 const deleteGuest = async function (token, payload) {
     try {
         const response = await axios.delete(
-            `${config.baseAPIurl}/guest`,
+            `${config.baseAPIurl}/guest?token=${payload.token}&unique_id=${payload.unique_id}`,
             {
                 ...payload
             },

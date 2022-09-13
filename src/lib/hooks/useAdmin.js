@@ -1,10 +1,43 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useCookie from './useCookie';
-import { addAdmin, adminLogin, editAdmin, getAdmin, deleteAdmin } from "../api/admin";
+import { addAdmin, adminLogin, editAdmin, getAdmin, deleteAdmin, getAdmins } from "../api/admin";
 import { config } from "../config";
-import { adminAdded, adminDeleted, adminUpdated } from "../slice/admin";
+
+const useGetAdmins = (token) => {
+
+    const [admins, setAdmins] = useState([]);
+    const [errorAdmins, setErrorAdmins] = useState(null);
+    const [loading_data, setLoading] = useState(true);
+
+    const adminsRes = getAdmins(token);
+
+    useEffect(() => {
+        adminsRes.then(res => {
+            setLoading(false);
+            if (res.err) {
+                if(!res.error.response.data.success) {
+                    const error = `${res.error.response.data.message}`;
+                    setLoading(false);
+                    setErrorAdmins(error);
+                } else {
+                    const error = `${res.error.code} - ${res.error.message}`;
+                    setLoading(false);
+                    setErrorAdmins(error);
+                }
+            } else {
+                setErrorAdmins(null);
+                setLoading(false);
+                setAdmins(res.data.data.rows);
+            }
+        }).catch(err => {
+            setLoading(false);
+        })
+
+    }, []);
+
+    return { admins, loading_data, errorAdmins };
+};
 
 const useAdminLogin = () => {
 
@@ -99,10 +132,6 @@ const useAddAdmin = (token) => {
     const validEmail = new RegExp(config.EMAIL_REGEX);
     const validPassword = new RegExp(config.PASSWORD_REGEX);
     
-    // hooks
-    const dispatch = useDispatch();
-    const adminsAmount = useSelector((state) => state.admins.entities.length);
-    
     const navigate = useNavigate();
     
     // handling all onChange states
@@ -155,7 +184,7 @@ const useAddAdmin = (token) => {
                 setLoading(false);
                 if (res.err) {
                     if (!res.error.response.data.success) {
-                        const error = `${res.error.response.data.message}`;
+                        const error = `${res.error.responsedata.message} - ${res.error.response.data.data[0].msg}`;
                         setErrorAddAdmin(error);
                         setTimeout(function () {
                             setErrorAddAdmin(null);
@@ -169,15 +198,6 @@ const useAddAdmin = (token) => {
                     }
                 } else {
                     setErrorAddAdmin(null);
-                    dispatch(
-                        adminAdded({
-                            id: adminsAmount + 1,
-                            unique_id: res.data.data.unique_id,
-                            email,
-                            firstname,
-                            lastname
-                        })
-                    );
                     setSuccessAddAdmin("Admin Added successfully ...");
 
                     setTimeout(function () {
@@ -209,15 +229,15 @@ const useEditAdmin = (token, unique_id) => {
     // declaring and initializing (to null) values
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
-
+    
     const findAdmin = getAdmin(token, unique_id);
-
+    
     useEffect(() => {
         findAdmin.then(res => {
             setLoadingAdmin(false);
             if (res.err) {
                 if (!res.error.response.data.success) {
-                    const error = `${res.error.response.data.message}`;
+                    const error = `${res.error.responsedata.message} - ${res.error.response.data.data[0].msg}`;
                     setAdminFound(error);
                 } else {
                     const error = `${res.error.code} - ${res.error.message}`;
@@ -233,7 +253,7 @@ const useEditAdmin = (token, unique_id) => {
         }).catch(err => {
             setLoadingAdmin(false);
         })
-    }, [findAdmin]);
+    }, []);
 
     // error & success prompts
     const [errorEditAdmin, setErrorEditAdmin] = useState(null);
@@ -241,9 +261,6 @@ const useEditAdmin = (token, unique_id) => {
 
     // validating values that need precision
     const validName = new RegExp(config.NAME_REGEX);
-
-    // hooks
-    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
@@ -292,13 +309,6 @@ const useEditAdmin = (token, unique_id) => {
                     }
                 } else {
                     setErrorEditAdmin(null);
-                    dispatch(
-                        adminUpdated({
-                            firstname,
-                            lastname,
-                            unique_id
-                        })
-                    );
                     setSuccessEditAdmin("Admin Edited successfully ...");
 
                     setTimeout(function () {
@@ -321,22 +331,20 @@ const useEditAdmin = (token, unique_id) => {
 
 const useDeleteAdmin = (token) => {
     
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [unique_id, setUniqueId] = useState(null);
-
-    // hooks
-    const dispatch = useDispatch();
-
+    
     // error & success prompts
     const [errorDeleteAdmin, setErrorDeleteAdmin] = useState(null);
     const [successDeleteAdmin, setSuccessDeleteAdmin] = useState(null);
-
-    const handleDelete = (e) => {
-        e.preventDefault();
-
+    
+    const handleDelete = () => {
+        setLoading(true);
+        
         const deleteAdminRes = deleteAdmin(token, {
-            unique_id
+            unique_id,
+            token
         })
     
         deleteAdminRes.then(res => {
@@ -357,7 +365,6 @@ const useDeleteAdmin = (token) => {
                 }
             } else {
                 setErrorDeleteAdmin(null);
-                dispatch(adminDeleted({ unique_id }));
                 setSuccessDeleteAdmin("Admin Deleted successfully ...");
     
                 setTimeout(function () {
@@ -370,11 +377,10 @@ const useDeleteAdmin = (token) => {
 
     };
 
-
     return {
         errorDeleteAdmin, successDeleteAdmin, loading, handleDelete, setUniqueId
     };
 
 };
 
-export { useAdminLogin, useAddAdmin, useEditAdmin, useDeleteAdmin };
+export { useAdminLogin, useAddAdmin, useEditAdmin, useDeleteAdmin, useGetAdmins };

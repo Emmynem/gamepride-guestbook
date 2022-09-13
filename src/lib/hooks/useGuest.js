@@ -1,8 +1,41 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { deleteGuest, guestSignup } from "../api/guest";
-import { guestDeleted } from "../slice/guest";
+import { useState, useEffect } from "react";
+import { deleteGuest, guestSignup, getGuests } from "../api/guest";
 import { config } from "../config";
+
+const useGetGuests = (token) => {
+
+    const [guests, setGuests] = useState([]);
+    const [errorGuests, setErrorGuests] = useState(null);
+    const [loading_data, setLoading] = useState(true);
+
+    const guestsRes = getGuests(token);
+
+    useEffect(() => {
+        guestsRes.then(res => {
+            setLoading(false);
+            if (res.err) {
+                if (!res.error.response.data.success) {
+                    const error = `${res.error.response.data.message}`;
+                    setLoading(false);
+                    setErrorGuests(error);
+                } else {
+                    const error = `${res.error.code} - ${res.error.message}`;
+                    setLoading(false);
+                    setErrorGuests(error);
+                }
+            } else {
+                setErrorGuests(null);
+                setLoading(false);
+                setGuests(res.data.data.rows);
+            }
+        }).catch(err => {
+            setLoading(false);
+        })
+
+    }, []);
+
+    return { guests, loading_data, errorGuests };
+};
 
 const useGuestSignUp = () => {
 
@@ -86,7 +119,7 @@ const useGuestSignUp = () => {
                 setLoading(false);
                 if (res.err) {
                     if (!res.error.response.data.success) {
-                        const error = `${res.error.response.data.message}`;
+                        const error = `${res.error.responsedata.message} - ${res.error.response.data.data[0].msg}`;
                         setErrorGuestSignup(error);
                         setTimeout(function () {
                             setErrorGuestSignup(null);
@@ -124,22 +157,20 @@ const useGuestSignUp = () => {
 
 const useDeleteGuest = (token) => {
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [unique_id, setUniqueId] = useState(null);
-
-    // hooks
-    const dispatch = useDispatch();
 
     // error & success prompts
     const [errorDeleteGuest, setErrorDeleteGuest] = useState(null);
     const [successDeleteGuest, setSuccessDeleteGuest] = useState(null);
     
-    const handleDelete = (e) => {
-        e.preventDefault();
+    const handleDelete = () => {
+        setLoading(true);
 
         const deleteGuestRes = deleteGuest(token, {
-            unique_id
+            unique_id,
+            token
         })
 
         deleteGuestRes.then(res => {
@@ -160,7 +191,6 @@ const useDeleteGuest = (token) => {
                 }
             } else {
                 setErrorDeleteGuest(null);
-                dispatch(guestDeleted({ unique_id }));
                 setSuccessDeleteGuest("Guest Deleted successfully ...");
     
                 setTimeout(function () {
@@ -179,4 +209,4 @@ const useDeleteGuest = (token) => {
 
 };
 
-export { useGuestSignUp, useDeleteGuest };
+export { useGuestSignUp, useDeleteGuest, useGetGuests };
